@@ -2,10 +2,10 @@
   "name": "ssb-box2",
   "description": "A collection of basic box2 functions for SSB",
   "version": "0.1.0",
-  "homepage": "https://github.com/ssbc/ssb-box2",
+  "homepage": "https://github.com/arj03/ssb-box2",
   "repository": {
     "type": "git",
-    "url": "git://github.com/ssb-ngi-pointer/ssb-box2.git"
+    "url": "git://github.com/arj03/ssb-box2.git"
   },
   "dependencies": {
     "envelope-js": "^1.0.0",
