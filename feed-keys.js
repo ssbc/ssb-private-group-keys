@@ -42,10 +42,11 @@ module.exports = class FeedKeys {
 
 function isValid (t) {
   return (
-    typeof t === 'string' && t.endsWith('.ed25519')
+    typeof t === 'string' &&
+      (t.endsWith('.ed25519') || t.endsWith('.bbfeed-v1'))
   )
 }
 
 function bufferize (str) {
-  return Buffer.from(str.replace('.ed25519', ''), 'base64')
+  return Buffer.from(str.replace('.ed25519', '').replace('.bbfeed-v1', ''), 'base64')
 }
