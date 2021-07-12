@@ -45,14 +45,14 @@ function EasyDirectMessageKey (ssbKeys) {
   const myFeedKeys = new FeedKeys(ssbKeys)
   const my = {
     dh: new DHKeys(myFeedKeys.toBuffer()).toTFK(),
-    feedId: bfe.encode(ssbKeys.id)
+    feedId: bfe.encodeClassic(ssbKeys.id)
   }
 
   return function EasyDirectMessageKey (feedId) {
     const yourFeedKeys = new FeedKeys({ public: feedId.replace('@', '') })
     const your = {
       dh: new DHKeys(yourFeedKeys.toBuffer()).toTFK(),
-      feedId: bfe.encode(feedId)
+      feedId: bfe.encodeClassic(feedId)
     }
 
     return directMessageKey(
