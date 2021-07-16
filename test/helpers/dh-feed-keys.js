@@ -11,7 +11,7 @@ module.exports = function DHFeedKeys (keys) {
 
   return {
     dh: new DHKeys(feedKeys).toTFK(),
-    feedId: bfe.encodeClassic(ssbKeys.id),
+    feedId: bfe.encode(ssbKeys.id),
     sigilFeedId: ssbKeys.id
   }
 }

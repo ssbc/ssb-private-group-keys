@@ -13,8 +13,8 @@ test('Cipherlink/FeedId', t => {
     Buffer.from('YXkE3TikkY4GFMX3lzXUllRkNTbj5E+604AkaO1xbz8=', 'base64')
   ])
 
-  t.deepEqual(bfe.encodeClassic(feedId), expected, 'toTFK')
-  t.deepEqual(bfe.decode(bfe.encodeClassic(feedId)), feedId, 'toSSB')
+  t.deepEqual(bfe.encode(feedId), expected, 'toTFK')
+  t.deepEqual(bfe.decode(bfe.encode(feedId)), feedId, 'toSSB')
 
   t.end()
 })
@@ -28,8 +28,8 @@ test('Cipherlink/MsgId', t => {
     Buffer.from('onDYxSjsIb4d3KhgHC7g5wdHLWw/7zygIBvZEx7v6KU=', 'base64')
   ])
 
-  t.deepEqual(bfe.encodeClassic(msgId), expected, 'toTFK')
-  t.deepEqual(bfe.decode(bfe.encodeClassic(msgId)), msgId, 'toSSB')
+  t.deepEqual(bfe.encode(msgId), expected, 'toTFK')
+  t.deepEqual(bfe.decode(bfe.encode(msgId)), msgId, 'toSSB')
 
   t.end()
 })
