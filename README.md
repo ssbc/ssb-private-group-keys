@@ -14,6 +14,7 @@ Create a secret key that can be used for the group or message key.
 
 Create a diffie-hellman shared key for another feedId
 
+## History
 
 This library was extracted from [ssb-tribes].
 
