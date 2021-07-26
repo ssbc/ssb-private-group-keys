@@ -1,8 +1,21 @@
 # SSB Box2
 
-Helper functions for doing box2. Support classic & bendy butt messages
-currently.
+Basic helper functions implementing the [private-group] spec.
 
-See also [ssb-tribes] from where this was extracted
+Currently supports classic & bendy butt feed types.
 
+## API
+
+### new SecretKey(length?)
+
+Create a secret key that can be used for the group or message key.
+
+### directMessageKey.easy(keys)
+
+Create a diffie-hellman shared key for another feedId
+
+
+This library was extracted from [ssb-tribes].
+
+[private-group]: https://github.com/ssbc/private-group-spec
 [ssb-tribes]: https://github.com/mixmix/ssb-tribes
