@@ -1,4 +1,8 @@
 module.exports = {
   SecretKey: require('./secret-key'),
-  directMessageKey: require('./direct-message-key')
+  directMessageKey: require('./direct-message-key'),
+
+  // testing
+  DHKeys: require('./direct-message-key'),
+  FeedKeys: require('./feed-keys')
 }
