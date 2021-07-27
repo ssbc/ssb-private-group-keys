@@ -27,7 +27,7 @@ module.exports = class DHKeys {
     }
   }
 
-  toTFD () {
+  toTFK () {
     let _sk
     if (this.sk) {
       _sk = Buffer.concat([

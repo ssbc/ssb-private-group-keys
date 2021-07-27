@@ -18,8 +18,8 @@ function directMessageKey (my_dh_secret, my_dh_public, my_feed, your_dh_public, 
   const input_keying_material = Buffer.alloc(na.crypto_scalarmult_BYTES)
   na.crypto_scalarmult(
     input_keying_material,
-    my_dh_secret.slice(2), // just the data part of TFD
-    your_dh_public.slice(2) // just the data part of TFD
+    my_dh_secret.slice(2), // just the key part of TFK
+    your_dh_public.slice(2) // just the key part of TFK
   )
 
   const info_context = Buffer.from(INFO_CONTEXT, 'utf8')
@@ -44,14 +44,14 @@ directMessageKey.easy = EasyDirectMessageKey
 function EasyDirectMessageKey (ssbKeys) {
   const myFeedKeys = new FeedKeys(ssbKeys)
   const my = {
-    dh: new DHKeys(myFeedKeys.toBuffer()).toTFD(),
+    dh: new DHKeys(myFeedKeys.toBuffer()).toTFK(),
     feedId: bfe.encode(ssbKeys.id)
   }
 
   return function EasyDirectMessageKey (feedId) {
     const yourFeedKeys = new FeedKeys({ public: feedId.replace('@', '') })
     const your = {
-      dh: new DHKeys(yourFeedKeys.toBuffer()).toTFD(),
+      dh: new DHKeys(yourFeedKeys.toBuffer()).toTFK(),
       feedId: bfe.encode(feedId)
     }
 
