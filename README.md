@@ -1,4 +1,4 @@
-# SSB Box2
+# ssb-private-group-keys
 
 Basic helper functions implementing the [private-group] spec.
 
