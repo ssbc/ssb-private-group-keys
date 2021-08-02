@@ -14,7 +14,7 @@ test('FeedKeys', t => {
   )
 
   const bendyKeys = ssbKeys.generate()
-  bendyKeys.public = bendyKeys.id = bendyKeys.id.replace('ed25519', 'bbfeed-v1')
+  bendyKeys.id = bendyKeys.id.replace('ed25519', 'bbfeed-v1')
 
   const bendyPKBuff = Buffer.from(bendyKeys.public.replace('.ed25519', ''), 'base64')
   const bendySKBuff = Buffer.from(bendyKeys.private.replace('.ed25519', ''), 'base64')

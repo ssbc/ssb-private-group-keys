@@ -37,10 +37,7 @@ test('direct-message-key', t => {
     'DirectMessageKey.easy produces same result'
   )
 
-  console.log('testing vectors')
   /* test vectors we've imported */
-
-  // WIP - export new test vectors, link + get this passing
   vectors.forEach(vector => {
     decodeLeaves(vector)
 

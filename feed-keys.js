@@ -33,9 +33,9 @@ module.exports = class FeedKeys {
 
   toBuffer () {
     return {
-      public: this.public,
       secret: this.secret,
-      private: this.secret
+      private: this.secret, // alias
+      public: this.public
     }
   }
 }
@@ -43,10 +43,10 @@ module.exports = class FeedKeys {
 function isValid (t) {
   return (
     typeof t === 'string' &&
-      (t.endsWith('.ed25519') || t.endsWith('.bbfeed-v1'))
+    t.endsWith('.ed25519')
   )
 }
 
 function bufferize (str) {
-  return Buffer.from(str.replace('.ed25519', '').replace('.bbfeed-v1', ''), 'base64')
+  return Buffer.from(str.replace('.ed25519', ''), 'base64')
 }
