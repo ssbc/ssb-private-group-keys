@@ -1,7 +1,15 @@
 /* eslint-disable camelcase */
 
 const test = require('tape')
-const { generate } = require('ssb-keys')
+const ssbKeys = require('ssb-keys')
+const bbKeys = {
+  generate () {
+    const keys = ssbKeys.generate()
+    keys.id = keys.id.replace('ed25519', 'bbfeed-v1')
+    return keys
+  }
+}
+
 const vectors = [
   require('private-group-spec/vectors/direct-message-key1.json')
 ]
@@ -11,10 +19,10 @@ const directMessageKey = require('../direct-message-key')
 
 test('direct-message-key', t => {
   /* local tests */
-  const mySSBKeys = generate()
+  const mySSBKeys = ssbKeys.generate()
   const my = DHFeedKeys(mySSBKeys)
 
-  const yourSSBKeys = generate()
+  const yourSSBKeys = ssbKeys.generate()
   const your = DHFeedKeys(yourSSBKeys)
   // directMessageKey (my_dh_secret, my_dh_public, your_dh_public, my_feed_id, your_feed_id) {
 
@@ -34,7 +42,16 @@ test('direct-message-key', t => {
   t.deepEqual(
     directMessageKey.easy(mySSBKeys)(yourSSBKeys.id),
     directMessageKey(my.dh.secret, my.dh.public, my.feedId, your.dh.public, your.feedId),
-    'DirectMessageKey.easy produces same result'
+    'DirectMessageKey.easy produces same result (classic)'
+  )
+
+  const bendyKeys = bbKeys.generate()
+  const bendy = DHFeedKeys(bendyKeys)
+
+  t.deepEqual(
+    directMessageKey.easy(mySSBKeys)(bendyKeys.id),
+    directMessageKey(my.dh.secret, my.dh.public, my.feedId, bendy.dh.public, bendy.feedId),
+    'DirectMessageKey.easy produces same result (bendy butt)'
   )
 
   /* test vectors we've imported */
