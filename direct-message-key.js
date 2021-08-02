@@ -6,7 +6,6 @@ const { slp } = require('envelope-js')
 const crypto = require('crypto')
 const { SALT, INFO_CONTEXT } = require('private-group-spec').constants.directMessages
 
-const FeedKeys = require('./feed-keys')
 const DHKeys = require('./dh-keys')
 const bfe = require('ssb-bfe')
 
@@ -42,16 +41,14 @@ function SHA256 (input) {
 directMessageKey.easy = EasyDirectMessageKey
 
 function EasyDirectMessageKey (ssbKeys) {
-  const myFeedKeys = new FeedKeys(ssbKeys)
   const my = {
-    dh: new DHKeys(myFeedKeys.toBuffer()).toTFK(),
+    dh: new DHKeys(ssbKeys, { fromEd25519: true }).toBFE(),
     feedId: bfe.encode(ssbKeys.id)
   }
 
   return function EasyDirectMessageKey (feedId) {
-    const yourFeedKeys = new FeedKeys({ public: feedId.replace('@', '') })
     const your = {
-      dh: new DHKeys(yourFeedKeys.toBuffer()).toTFK(),
+      dh: new DHKeys({ public: feedId.replace('@', '') }, { fromEd25519: true }).toBFE(),
       feedId: bfe.encode(feedId)
     }
 

@@ -3,8 +3,7 @@
 const test = require('tape')
 const { generate } = require('ssb-keys')
 const vectors = [
-  // TODO
-  // require('private-group-spec/vectors/direct-message-key1.json')
+  require('private-group-spec/vectors/direct-message-key1.json')
 ]
 
 const { decodeLeaves, DHFeedKeys } = require('./helpers')

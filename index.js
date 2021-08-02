@@ -3,6 +3,5 @@ module.exports = {
   directMessageKey: require('./direct-message-key'),
 
   // testing
-  DHKeys: require('./dh-keys'),
-  FeedKeys: require('./feed-keys')
+  DHKeys: require('./dh-keys')
 }
