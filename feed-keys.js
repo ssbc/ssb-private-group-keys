@@ -9,11 +9,11 @@ const na = require('sodium-native')
 module.exports = class FeedKeys {
   constructor (keys) {
     if (!isValid(keys.public)) {
-      throw new Error(`FeedKeys expects a 'public' key of form <base64>.ed25119, got ${keys.public}`)
+      throw new Error(`FeedKeys expects a 'public' key of form <base64>.ed25119 or <base64>.bbfeed-v1, got ${keys.public}`)
     }
     if (keys.private && !isValid(keys.private)) {
       // private key optional
-      throw new Error(`FeedKeys expects any 'private' key to be of form <base64>.ed25119, got ${keys.private}`)
+      throw new Error(`FeedKeys expects any 'private' key to be of form <base64>.ed25119 or <base64>.bbfeed-v1, got ${keys.private}`)
     }
 
     this.public = bufferize(keys.public)
@@ -33,9 +33,9 @@ module.exports = class FeedKeys {
 
   toBuffer () {
     return {
-      public: this.public,
       secret: this.secret,
-      private: this.secret
+      private: this.secret, // alias
+      public: this.public
     }
   }
 }
