@@ -47,8 +47,14 @@ function EasyDirectMessageKey (ssbKeys) {
   }
 
   return function EasyDirectMessageKey (feedId) {
+    const dotIndex = feedId.indexOf('.')
+    const keys = {
+      public: feedId.substring(1, dotIndex > 0 ? dotIndex : feedId.length)
+      // prunes the @ + suffix
+    }
+
     const your = {
-      dh: new DHKeys({ public: feedId.replace('@', '') }, { fromEd25519: true }).toBFE(),
+      dh: new DHKeys(keys, { fromEd25519: true }).toBFE(),
       feedId: bfe.encode(feedId)
     }
 
