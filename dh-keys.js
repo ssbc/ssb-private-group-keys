@@ -6,7 +6,7 @@ const na = require('sodium-native')
 module.exports = class DHKeys {
   static scalarMult (a, b, result) {
     const sk = a instanceof DHKeys ? a.sk : bufferize(a.secret || a.private)
-    const pk = b instanceof DHKeys ? b.pk : bufferize(a.public)
+    const pk = b instanceof DHKeys ? b.pk : bufferize(b.public)
 
     result = result || Buffer.alloc(na.crypto_scalarmult_BYTES)
     na.crypto_scalarmult(result, sk, pk)
@@ -19,7 +19,7 @@ module.exports = class DHKeys {
     this.type = 3 // dh-key
     this.format = 0 // curve25519
 
-    if (keys === undefined) keys = generate()
+    if (keys === undefined) return // you are expected to use .generate() in this case
 
     const secret = keys.secret || keys.private
 
@@ -46,6 +46,16 @@ module.exports = class DHKeys {
     }
   }
 
+  generate () {
+    this.sk = Buffer.alloc(na.crypto_scalarmult_SCALARBYTES)
+    na.randombytes_buf(this.sk)
+
+    this.pk = Buffer.alloc(na.crypto_scalarmult_BYTES)
+    na.crypto_scalarmult_base(this.pk, this.sk)
+
+    return this
+  }
+
   toBuffer () {
     return {
       secret: this.sk,
@@ -54,22 +64,18 @@ module.exports = class DHKeys {
   }
 
   toBFE () {
-    let _sk
-    if (this.sk) {
-      _sk = Buffer.concat([
+    return {
+      secret: this.sk && Buffer.concat([
         Buffer.from([this.type]),
         Buffer.from([this.format]),
         this.sk
+      ]),
+      public: Buffer.concat([
+        Buffer.from([this.type]),
+        Buffer.from([this.format]),
+        this.pk
       ])
     }
-
-    const _pk = Buffer.concat([
-      Buffer.from([this.type]),
-      Buffer.from([this.format]),
-      this.pk
-    ])
-
-    return { secret: _sk, public: _pk }
   }
 
   toTFK () {
@@ -83,21 +89,5 @@ function bufferize (key, length) {
 
   if (typeof (key) !== 'string') throw new Error(`unable to bufferize ${typeof key}`)
 
-  return Buffer.from(
-    key.replace('.ed25519', ''),
-    'base64'
-  )
-}
-
-function generate () {
-  const sk = Buffer.alloc(na.crypto_scalarmult_SCALARBYTES)
-  na.randombytes_buf(sk)
-
-  const pk = Buffer.alloc(na.crypto_scalarmult_BYTES)
-  na.crypto_scalarmult_base(pk, sk)
-
-  return {
-    public: pk,
-    secret: sk
-  }
+  return Buffer.from(key.replace('.ed25519', ''), 'base64')
 }
