@@ -68,7 +68,7 @@ test('direct-message-key', t => {
       sharedKeyScheme,
       {
         key: vector.output.shared_key,
-        scheme: SCHEME
+        scheme: vector.output.key_scheme
       },
       vector.description
     )

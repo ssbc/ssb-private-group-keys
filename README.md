@@ -32,10 +32,32 @@ All inputs are [BFE] style buffers.
 
 The output is a `key` (buffer) and associated `scheme` (string) which can be passed into an envelope `key_slot`
 
+
 ### `directMessageKey.easy(myKeys) => makeKey(feedId) => { key, scheme }`
 
 Convenience function which wraps `directMessageKey`
 
+
+### `poBoxKey(x_dh_secret, x_dh_public, x_id, y_dh_public, y_id) => { key, scheme }`
+
+If you are _encrypting_ to a P.O. Box, then `x` is your feed, and `y` is the P.O. Box.
+If you are _decrypting_ a message sent to a P.O. Box, then `x` is the P.O. Box, and `y` is the message author's feed.
+
+- `x_dh_secret`, `x_dh_public` are x's diffie-hellman keys
+- `x_id` is the BFE id of `x`
+- `y_dh_public` is y's diffie-hellman public key
+- `y_id` is the BFE id of `y`
+
+All inputs are [BFE] style buffers.
+
+The output is a `key` (buffer) and associated `scheme` (string) which can be passed into an envelope `key_slot`
+
+
+### `poBoxKey.easy(myKeys) => makeKey(poboxId) => { key, scheme }`
+
+Convenience function which wraps `poBoxKey`
+
+Can also be used `poBoxKey.easy(poBoxKeys) => makeKey(authorFeedId) => { key, scheme }`
 
 ## History
 
