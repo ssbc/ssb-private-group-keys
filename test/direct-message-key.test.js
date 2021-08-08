@@ -54,6 +54,14 @@ test('direct-message-key', t => {
     'DirectMessageKey.easy produces same result (bendy butt)'
   )
 
+  /* unhappy path */
+
+  const self = my
+  t.throws(
+    () => directMessageKey(my.dh.secret, my.dh.public, my.feedId, self.dh.public, self.feedId),
+    'throws if try to use this method with your own feedId'
+  )
+
   /* test vectors we've imported */
   vectors.forEach(vector => {
     decodeLeaves(vector)
