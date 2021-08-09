@@ -1,81 +1,75 @@
 /* eslint-disable camelcase */
 
 const test = require('tape')
-const ssbKeys = require('ssb-keys')
-const bbKeys = {
-  generate () {
-    const keys = ssbKeys.generate()
-    keys.id = keys.id.replace('ed25519', 'bbfeed-v1')
-    return keys
-  }
-}
-
+const pgSpec = require('private-group-spec')
 const vectors = [
   require('private-group-spec/vectors/direct-message-key1.json')
 ]
 
-const { decodeLeaves, DHFeedKeys } = require('./helpers')
-const directMessageKey = require('../direct-message-key')
+const { directMessageKey } = require('../')
+const { decodeLeaves, DHFeedKeys, ssbKeys, bbKeys } = require('./helpers')
+const SCHEME = Buffer.from(pgSpec.keySchemes.feed_id_dm, 'utf8')
 
 test('direct-message-key', t => {
-  /* local tests */
   const mySSBKeys = ssbKeys.generate()
   const my = DHFeedKeys(mySSBKeys)
 
   const yourSSBKeys = ssbKeys.generate()
   const your = DHFeedKeys(yourSSBKeys)
-  // directMessageKey (my_dh_secret, my_dh_public, your_dh_public, my_feed_id, your_feed_id) {
-
-  /* general checks */
-  t.deepEqual(
-    directMessageKey(my.dh.secret, my.dh.public, my.feedId, your.dh.public, your.feedId),
-    directMessageKey(your.dh.secret, your.dh.public, your.feedId, my.dh.public, my.feedId),
-    'the key is shared!'
-  )
-
-  t.isNotDeepEqual(
-    directMessageKey(my.dh.secret, my.dh.public, my.feedId, your.dh.public, your.feedId),
-    Buffer.alloc(32),
-    'is not empty'
-  )
-
-  t.deepEqual(
-    directMessageKey.easy(mySSBKeys)(yourSSBKeys.id),
-    directMessageKey(my.dh.secret, my.dh.public, my.feedId, your.dh.public, your.feedId),
-    'DirectMessageKey.easy produces same result (classic)'
-  )
 
   const bendyKeys = bbKeys.generate()
   const bendy = DHFeedKeys(bendyKeys)
 
+  /* general checks */
+  const key1 = directMessageKey(my.dh.secret, my.dh.public, my.feedId, your.dh.public, your.feedId)
+  const key2 = directMessageKey(your.dh.secret, your.dh.public, your.feedId, my.dh.public, my.feedId)
+  t.deepEqual(key1, key2, 'the key is shared!')
+
+  t.true(Buffer.isBuffer(key1.key), 'key is a buffer')
+  t.isNotDeepEqual(key1.key, Buffer.alloc(32), 'its not not empty')
+  t.deepEqual(key1.scheme, SCHEME, 'scheme is valid')
+
+  const key3 = directMessageKey(my.dh.secret, my.dh.public, my.feedId, bendy.dh.public, bendy.feedId)
+  const key4 = directMessageKey(bendy.dh.secret, bendy.dh.public, bendy.feedId, my.dh.public, my.feedId)
+  t.deepEqual(key3, key4, 'the key is shared (classic/ bendy)')
+
+  /* easy checks */
   t.deepEqual(
-    directMessageKey.easy(mySSBKeys)(bendyKeys.id),
-    directMessageKey(my.dh.secret, my.dh.public, my.feedId, bendy.dh.public, bendy.feedId),
-    'DirectMessageKey.easy produces same result (bendy butt)'
+    directMessageKey.easy(mySSBKeys)(yourSSBKeys.id),
+    key1,
+    'DirectMessageKey.easy produces same result (classic/classic)'
   )
 
-  /* unhappy path */
+  t.deepEqual(
+    directMessageKey.easy(mySSBKeys)(bendyKeys.id),
+    key3,
+    'DirectMessageKey.easy produces same result (classic/bendy butt)'
+  )
 
-  const self = my
-  t.throws(
-    () => directMessageKey(my.dh.secret, my.dh.public, my.feedId, self.dh.public, self.feedId),
-    'throws if try to use this method with your own feedId'
+  t.deepEqual(
+    directMessageKey.easy(bendyKeys)(mySSBKeys.id),
+    key3,
+    'DirectMessageKey.easy produces same result (bendy butt/classic)'
   )
 
   /* test vectors we've imported */
+  console.log('test vectors:', vectors.length)
   vectors.forEach(vector => {
     decodeLeaves(vector)
 
     const { my_dh_secret, my_dh_public, my_feed_id, your_dh_public, your_feed_id } = vector.input
 
-    const sharedKey = directMessageKey(
+    const sharedKeyScheme = directMessageKey(
       my_dh_secret, my_dh_public, my_feed_id,
       your_dh_public, your_feed_id
     )
 
     t.deepEqual(
-      sharedKey,
-      vector.output.shared_key,
+      sharedKeyScheme,
+      {
+        key: vector.output.shared_key,
+        scheme: SCHEME
+      },
       vector.description
     )
   })

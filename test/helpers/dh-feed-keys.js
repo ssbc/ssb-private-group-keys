@@ -1,7 +1,7 @@
 const { generate } = require('ssb-keys')
 
 const bfe = require('ssb-bfe')
-const DHKeys = require('../../dh-keys')
+const { DHKeys } = require('../../lib')
 
 module.exports = function DHFeedKeys (keys) {
   const ssbKeys = keys || generate()
