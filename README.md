@@ -44,3 +44,4 @@ This library was originally extracted from [ssb-tribes].
 [private-group]: https://github.com/ssbc/private-group-spec
 [ssb-tribes]: https://github.com/mixmix/ssb-tribes
 [BFE]: https://github.com/ssb-ngi-pointer/ssb-binary-field-encodings-spec
+
