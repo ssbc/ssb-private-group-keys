@@ -8,8 +8,9 @@
     "url": "git://github.com/ssbc/ssb-private-group-keys.git"
   },
   "scripts": {
-    "test": "tape test/*.js | tap-bail | tap-spec",
-    "generate": "rm test/generate/*/* && node test/generate/*.js"
+    "test": "tape 'test/**/*.test.js' | tap-bail | tap-spec",
+    "lint": "standard --fix",
+    "generate": "rm -rf test/generate/*/vectors && node test/generate/index.js"
   },
   "dependencies": {
     "envelope-js": "^1.0.0",
@@ -22,6 +23,7 @@
     "is-canonical-base64": "^1.1.1",
     "ssb-keys": "^8.0.2",
     "ssb-ref": "^2.14.3",
+    "standard": "^16.0.3",
     "tap-bail": "^1.0.0",
     "tap-spec": "^5.0.0",
     "tape": "^5.2.2"

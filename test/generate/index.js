@@ -1,0 +1,1 @@
+require('./direct-message-key')

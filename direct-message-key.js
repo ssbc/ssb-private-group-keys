@@ -3,11 +3,12 @@
 const na = require('sodium-native')
 const hkdf = require('futoin-hkdf')
 const { slp } = require('envelope-js')
-const crypto = require('crypto')
-const { SALT, INFO_CONTEXT } = require('private-group-spec').constants.directMessages
+const pgSpec = require('private-group-spec')
 
-const DHKeys = require('./dh-keys')
-const bfe = require('ssb-bfe')
+const { SHA256, easyify } = require('./lib')
+
+const { SALT, INFO_CONTEXT } = pgSpec.constants.directMessages
+const SCHEME = Buffer.from(pgSpec.keySchemes.feed_id_dm, 'utf8')
 
 const hash = 'SHA256'
 const length = 32
@@ -28,41 +29,12 @@ function directMessageKey (my_dh_secret, my_dh_public, my_feed, your_dh_public, 
   ].sort()
   const info = slp.encode([info_context, ...info_keys])
 
-  return hkdf(input_keying_material, length, { salt, info, hash })
-}
-
-function SHA256 (input) {
-  const hash = crypto.createHash('sha256')
-
-  hash.update(input)
-  return hash.digest()
-}
-
-directMessageKey.easy = EasyDirectMessageKey
-
-function EasyDirectMessageKey (ssbKeys) {
-  const my = {
-    dh: new DHKeys(ssbKeys, { fromEd25519: true }).toBFE(),
-    feedId: bfe.encode(ssbKeys.id)
-  }
-
-  return function EasyDirectMessageKey (feedId) {
-    const dotIndex = feedId.indexOf('.')
-    const keys = {
-      public: feedId.substring(1, dotIndex > 0 ? dotIndex : feedId.length)
-      // prunes the @ + suffix
-    }
-
-    const your = {
-      dh: new DHKeys(keys, { fromEd25519: true }).toBFE(),
-      feedId: bfe.encode(feedId)
-    }
-
-    return directMessageKey(
-      my.dh.secret, my.dh.public, my.feedId,
-      your.dh.public, your.feedId
-    )
+  return {
+    key: hkdf(input_keying_material, length, { salt, info, hash }),
+    scheme: SCHEME
   }
 }
+
+directMessageKey.easy = easyify(directMessageKey)
 
 module.exports = directMessageKey
