@@ -20,7 +20,8 @@ const generators = [
         your_feed_id: your.feedId
       },
       output: {
-        shared_key: sharedKey
+        shared_key: sharedKey.key,
+        key_scheme: sharedKey.scheme
       }
     }
     print(`vectors/direct-message-key${i + 1}.json`, vector)
