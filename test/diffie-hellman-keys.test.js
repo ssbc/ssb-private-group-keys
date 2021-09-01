@@ -4,9 +4,9 @@ const test = require('tape')
 const na = require('sodium-native')
 const ssbKeys = require('ssb-keys')
 
-const { DHKeys: Keys } = require('../../lib')
+const { DHKeys: Keys } = require('..')
 
-test('dh-keys', t => {
+test('diffie-hellman-keys', t => {
   /* new DHKeys().generate() */
   const a = new Keys().generate()
   const b = new Keys().generate()

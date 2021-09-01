@@ -6,15 +6,6 @@ Currently supports classic & bendy butt feed types.
 
 ## API
 
-### `new SecretKey(length?) => secretKey`
-
-Create a secret key that can be used for the group or message key.
-
-methods:
-- `secretKey.toBuffer() => buffer` return raw buffer with the key data in it
-- `secretKey.toString() => string` returns a `base64` encoded string of the key
-
-
 ### `directMessageKey(x_dh_secret, x_dh_public, x_feed_id, y_dh_public, y_feed_id) => { key, scheme }`
 
 Create a shared key for communication between your feed and _another_ feed.
@@ -33,10 +24,11 @@ All inputs are [BFE] style buffers.
 The output is a `key` (buffer) and associated `scheme` (string) which can be passed into an envelope `key_slot`
 
 
-### `directMessageKey.easy(myKeys) => makeKey(feedId) => { key, scheme }`
+#### `directMessageKey.easy(myKeys) => makeKey(feedId) => { key, scheme }`
 
 Convenience function which wraps `directMessageKey`
 
+---
 
 ### `poBoxKey(x_dh_secret, x_dh_public, x_id, y_dh_public, y_id) => { key, scheme }`
 
@@ -53,11 +45,58 @@ All inputs are [BFE] style buffers.
 The output is a `key` (buffer) and associated `scheme` (string) which can be passed into an envelope `key_slot`
 
 
-### `poBoxKey.easy(myKeys) => makeKey(poboxId) => { key, scheme }`
+#### `poBoxKey.easy(myKeys) => makeKey(poboxId) => { key, scheme }`
 
 Convenience function which wraps `poBoxKey`
 
 Can also be used `poBoxKey.easy(poBoxKeys) => makeKey(authorFeedId) => { key, scheme }`
+
+---
+
+### `new SecretKey(length?) => secretKey`
+
+Create a secret key that can be used for the group or message key.
+
+methods:
+- `secretKey.toBuffer() => buffer` return raw buffer with the key data in it
+- `secretKey.toString() => string` returns a `base64` encoded string of the key
+
+---
+
+### `new DiffieHellmanKeys(keys?, opts?) => dhKeys`
+
+_alias: `DHKeys`_
+
+where:
+- `keys` *Object* (optional)
+    - is a pair of keys `{ public, secret? }`, each a Buffer or base64 encoded String
+        - `public` is required, `secret` is optional
+    - if not provided, you are expected to call `dhKeys.generate()` to generate a keypair
+- `opts` *Object* (optional)
+    - `opts.fromEd25519` *Boolean* sets whether the keys are ed25519 signing keys you would like converted to curve25519 encryption keys.
+        - default: `false`
+- `dhKeys` *DiffieHellmanKeys instance* with methods:
+    - `dhKeys.generate() => dhKeys` - generates public and private dh keys
+    - `dhKeys.toBuffer() => { public: Buffer, secret: Buffer }` - returns the raw keys as Buffers
+    - `dhKeys.toBFE() => { public: BFE, secret: BFE }` - return [BFE] encodings of the keys (as Buffers) 
+        - NOTE: the `format` chosen for BFE is _guessed_ based on how the keys were input
+            - if `opts.fromEd25519 = true` was used, it's assumed these are dm keys (`format = 0`)
+            - else it's asssumed these are P.O. Box keys (`format = 1`)
+
+### `DiffieHellmanKeys.scalarMult(A, B) => result`
+
+A class method for creating shared encryption keys.
+- `A` a DHKeys instance, must include `secret` key
+- `B` a DHKeys instance
+- `result` *Buffer* the result of the scalarMult
+    - only useful in advanced cases to conserve memory
+
+NOTE:
+- method also takes appropriately shaped objects, see source code.
+- there's an advanced signature if you need to conserve memory `(A, B, result) => result`
+
+
+---
 
 ## History
 

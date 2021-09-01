@@ -1,7 +1,9 @@
 const na = require('sodium-native')
 
-// this is for converting FeedKeys (ed25119 signing keys) into
-// Diffie-Hellman keys (curve25519 based shared key encryption)
+// this is a helper for handling Diffie-Hellman keys (for curve25519 based shared key encryption)
+// it can also converting FeedKeys (ed25119 signing keys) into curve25519 keys
+//
+// NOTE - for BFE encryption, pay close attention to the "format".
 
 module.exports = class DHKeys {
   static scalarMult (a, b, result) {
