@@ -1,4 +1,6 @@
 const ssbKeys = require('ssb-keys')
+const bfe = require('ssb-bfe')
+
 const DHFeedKeys = require('./dh-feed-keys')
 const DHPOBoxKeys = require('./dh-po-box-keys')
 const encodeLeaves = require('./encode-leaves')
@@ -10,8 +12,18 @@ module.exports = {
   bbKeys: {
     generate () {
       const keys = ssbKeys.generate()
-      keys.id = keys.id.replace('ed25519', 'bbfeed-v1')
-      return keys
+
+      return {
+        public: prune(keys.public),
+        secret: prune(keys.private),
+
+        id: bfe.decode(
+          Buffer.concat([
+            bfe.toTF('feed', 'bendybutt-v1'),
+            Buffer.from(prune(keys.public), 'base64')
+          ])
+        )
+      }
     }
   },
   DHFeedKeys,
@@ -19,4 +31,8 @@ module.exports = {
   encodeLeaves,
   decodeLeaves,
   print
+}
+
+function prune (key) {
+  return key.replace('.ed25519', '')
 }
