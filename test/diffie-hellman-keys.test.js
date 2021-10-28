@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 
 const test = require('tape')
-const na = require('sodium-native')
+const na = require('sodium-universal')
 const ssbKeys = require('ssb-keys')
 
 const { DHKeys: Keys } = require('..')

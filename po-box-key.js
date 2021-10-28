@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 
-const na = require('sodium-native')
+const na = require('sodium-universal')
 const hkdf = require('futoin-hkdf')
 const { slp } = require('envelope-js')
 const pgSpec = require('private-group-spec')

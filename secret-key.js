@@ -1,4 +1,4 @@
-const na = require('sodium-native')
+const na = require('sodium-universal')
 
 // This is for use as:
 // - a group's symmetric key (`group_key`)

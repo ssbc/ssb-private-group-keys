@@ -1,4 +1,4 @@
-const na = require('sodium-native')
+const na = require('sodium-universal')
 
 // this is a helper for handling Diffie-Hellman keys (for curve25519 based shared key encryption)
 // it can also converting FeedKeys (ed25119 signing keys) into curve25519 keys
