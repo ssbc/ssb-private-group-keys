@@ -29,5 +29,5 @@
     "tape": "^5.2.2"
   },
   "author": "mixmix",
-  "license": "AGPL-3.0"
+  "license": "LGPL-3.0-only"
 }
