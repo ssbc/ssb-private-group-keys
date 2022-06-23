@@ -2,6 +2,7 @@
 
 const test = require('tape')
 const pgSpec = require('private-group-spec')
+const { fromFeedSigil } = require('ssb-uri2')
 const vectors = [
   require('private-group-spec/vectors/direct-message-key1.json')
 ]
@@ -38,6 +39,12 @@ test('direct-message-key', t => {
     directMessageKey.easy(mySSBKeys)(yourSSBKeys.id),
     key1,
     'DirectMessageKey.easy produces same result (classic/classic)'
+  )
+
+  t.deepEqual(
+    directMessageKey.easy(mySSBKeys)(fromFeedSigil(yourSSBKeys.id)),
+    key1,
+    'DirectMessageKey.easy produces same result (classic/classic-uri)'
   )
 
   t.deepEqual(
