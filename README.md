@@ -49,7 +49,6 @@ The output is a `key` (buffer) and associated `scheme` (string) which can be pas
 
 Convenience function which wraps `poBoxKey`
 
-Can also be used `poBoxKey.easy(poBoxKeys) => makeKey(authorFeedId) => { key, scheme }`
 
 ---
 

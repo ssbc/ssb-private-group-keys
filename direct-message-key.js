@@ -5,7 +5,7 @@ const hkdf = require('futoin-hkdf')
 const { slp } = require('envelope-js')
 const pgSpec = require('private-group-spec')
 
-const { SHA256, easyify } = require('./lib')
+const { SHA256, easyify, isKeyDM } = require('./lib')
 
 const { SALT, INFO_CONTEXT } = pgSpec.constants.directMessages
 const SCHEME = Buffer.from(pgSpec.keySchemes.feed_id_dm, 'utf8')
@@ -15,6 +15,9 @@ const length = 32
 const salt = SHA256(SALT)
 
 function directMessageKey (my_dh_secret, my_dh_public, my_feed, your_dh_public, your_feed) {
+  if (![my_dh_public, my_dh_secret, your_dh_public].every(isKeyDM)) {
+    throw new Error('directMessageKey expects all key args to be BFE format-type [3, 0]')
+  }
   const input_keying_material = Buffer.alloc(na.crypto_scalarmult_BYTES)
   na.crypto_scalarmult(
     input_keying_material,

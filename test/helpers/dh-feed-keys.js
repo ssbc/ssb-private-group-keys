@@ -3,6 +3,9 @@ const bfe = require('ssb-bfe')
 const DHKeys = require('../../diffie-hellman-keys')
 
 module.exports = function DHFeedKeys (keys) {
+  // this assumes we're taking ed25519 keys used for signing feed messages
+  // and converting them to curve25519 keys used for encrypting
+
   const ssbKeys = keys || generate()
 
   return {
