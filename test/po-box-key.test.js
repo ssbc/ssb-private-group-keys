@@ -72,9 +72,6 @@ test('po-box-key', t => {
 
       const { my_dh_secret, my_dh_public, my_feed_id, po_box_dh_public, po_box_id } = vector.input
 
-      // WIP fix this vector!!!
-      // both tf 0300 !! pobox should be 0301
-
       const sharedKey = poBoxKey(
         my_dh_secret, my_dh_public, my_feed_id,
         po_box_dh_public, po_box_id

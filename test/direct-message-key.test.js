@@ -38,25 +38,34 @@ test('direct-message-key', t => {
   t.deepEqual(
     directMessageKey.easy(mySSBKeys)(yourSSBKeys.id),
     key1,
-    'DirectMessageKey.easy produces same result (classic/classic)'
+    'DirectMessageKey.easy produces same result (classic keys + sigil)'
   )
 
+  const yourEd25519URI = fromFeedSigil(yourSSBKeys.id) // ssb:feed/ed25519
   t.deepEqual(
-    directMessageKey.easy(mySSBKeys)(fromFeedSigil(yourSSBKeys.id)),
+    directMessageKey.easy(mySSBKeys)(yourEd25519URI),
     key1,
-    'DirectMessageKey.easy produces same result (classic/classic-uri)'
+    'DirectMessageKey.easy produces same result (classic keys + ssb:feed/ed25519)'
   )
 
+  // const yourClassicURI = yourEd25519URI.replace('ed25519', 'classic') // ssb:feed/classic
+  // t.deepEqual(
+  //   directMessageKey.easy(mySSBKeys)(yourClassicURI),
+  //   key1,
+  //   'DirectMessageKey.easy produces same result (classic keys + ssb:feed/classic)'
+  // )
+
+  console.log(bendyKeys.id)
   t.deepEqual(
     directMessageKey.easy(mySSBKeys)(bendyKeys.id),
     key3,
-    'DirectMessageKey.easy produces same result (classic/bendy butt)'
+    'DirectMessageKey.easy produces same result (classic keys + ssb:feed/bendybutt-v1)'
   )
 
   t.deepEqual(
     directMessageKey.easy(bendyKeys)(mySSBKeys.id),
     key3,
-    'DirectMessageKey.easy produces same result (bendy butt/classic)'
+    'DirectMessageKey.easy produces same result (bendy butt keys + sigil)'
   )
 
   /* test vectors we've imported */
