@@ -74,13 +74,13 @@ where:
 - `opts` *Object* (optional)
     - `opts.fromEd25519` *Boolean* sets whether the keys are ed25519 signing keys you would like converted to curve25519 encryption keys.
         - default: `false`
+    - `opts.format` *Integer* sets whether the BFE "format" of the encryption key type
+        - if `opts.fromEd25519 = true` was used, it's assumed these are dm keys (`format = 0`)
+        - else format is not set, which is fine as long as you don't call `dhKeys.toBFE()`
 - `dhKeys` *DiffieHellmanKeys instance* with methods:
     - `dhKeys.generate() => dhKeys` - generates public and private dh keys
     - `dhKeys.toBuffer() => { public: Buffer, secret: Buffer }` - returns the raw keys as Buffers
     - `dhKeys.toBFE() => { public: BFE, secret: BFE }` - return [BFE] encodings of the keys (as Buffers) 
-        - NOTE: the `format` chosen for BFE is _guessed_ based on how the keys were input
-            - if `opts.fromEd25519 = true` was used, it's assumed these are dm keys (`format = 0`)
-            - else it's asssumed these are P.O. Box keys (`format = 1`)
 
 ### `DiffieHellmanKeys.scalarMult(A, B) => result`
 
