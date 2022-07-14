@@ -19,27 +19,28 @@ module.exports = class DHKeys {
   constructor (keys, opts = {}) {
     // feedKeys = { secret: Buffer, public: Buffer }
     this.type = 3 // type: encryption-key
-    this.format = opts.fromEd25519
-      ? 0 // dm related
-      : 1 // probably po-box related
+    this.format = opts.format
+    if (!this.format && opts.fromEd25519) this.format = 0
+    // fromEd25519 implies this is an encryption keypair being derived from a signing keypair
+    // which is the classic way DMs are done (box2-dm-dh format = 0)
 
     if (keys === undefined) return // you are expected to use .generate() in this case
 
-    const secret = keys.secret || keys.private
+    keys.secret = keys.secret || keys.private
 
     if (opts.fromEd25519) {
       /* convert ed25519 to curve25519 key */
       this.pk = Buffer.alloc(na.crypto_scalarmult_BYTES)
       na.crypto_sign_ed25519_pk_to_curve25519(this.pk, bufferize(keys.public))
 
-      if (secret) {
+      if (keys.secret) {
         this.sk = Buffer.alloc(na.crypto_scalarmult_SCALARBYTES)
-        na.crypto_sign_ed25519_sk_to_curve25519(this.sk, bufferize(secret))
+        na.crypto_sign_ed25519_sk_to_curve25519(this.sk, bufferize(keys.secret))
       }
     } else {
       /* already curve25519 */
       if (keys.public) this.pk = bufferize(keys.public)
-      if (secret) this.sk = bufferize(secret)
+      if (keys.secret) this.sk = bufferize(keys.secret)
     }
 
     if (this.pk && this.pk.length !== na.crypto_scalarmult_BYTES) {
@@ -68,6 +69,8 @@ module.exports = class DHKeys {
   }
 
   toBFE () {
+    if (this.format === undefined) throw new Error('format is undefined, please use opts.format')
+
     return {
       secret: this.sk && Buffer.concat([
         Buffer.from([this.type]),

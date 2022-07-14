@@ -55,7 +55,6 @@ test('direct-message-key', t => {
   //   'DirectMessageKey.easy produces same result (classic keys + ssb:feed/classic)'
   // )
 
-  console.log(bendyKeys.id)
   t.deepEqual(
     directMessageKey.easy(mySSBKeys)(bendyKeys.id),
     key3,

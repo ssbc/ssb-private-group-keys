@@ -8,7 +8,7 @@
     "url": "git://github.com/ssbc/ssb-private-group-keys.git"
   },
   "scripts": {
-    "test": "tape 'test/**/*.test.js' | tap-arc --bail",
+    "test": "tape 'test/**/*.test.js' | tap-arc",
     "lint": "standard --fix",
     "generate": "rm -rf test/generate/*/vectors && node test/generate/index.js"
   },
