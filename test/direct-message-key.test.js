@@ -2,12 +2,13 @@
 
 const test = require('tape')
 const pgSpec = require('private-group-spec')
+const { fromFeedSigil } = require('ssb-uri2')
 const vectors = [
   require('private-group-spec/vectors/direct-message-key1.json')
 ]
 
 const { directMessageKey } = require('../')
-const { decodeLeaves, DHFeedKeys, ssbKeys, bbKeys } = require('./helpers')
+const { decodeLeaves, DHFeedKeys, ssbKeys } = require('./helpers')
 const SCHEME = Buffer.from(pgSpec.keySchemes.feed_id_dm, 'utf8')
 
 test('direct-message-key', t => {
@@ -17,7 +18,7 @@ test('direct-message-key', t => {
   const yourSSBKeys = ssbKeys.generate()
   const your = DHFeedKeys(yourSSBKeys)
 
-  const bendyKeys = bbKeys.generate()
+  const bendyKeys = ssbKeys.generate(null, null, 'bendybutt-v1')
   const bendy = DHFeedKeys(bendyKeys)
 
   /* general checks */
@@ -37,19 +38,34 @@ test('direct-message-key', t => {
   t.deepEqual(
     directMessageKey.easy(mySSBKeys)(yourSSBKeys.id),
     key1,
-    'DirectMessageKey.easy produces same result (classic/classic)'
+    'DirectMessageKey.easy produces same result (classic keys + sigil)'
+  )
+
+  const yourClassicURI = fromFeedSigil(yourSSBKeys.id) // ssb:feed/classic
+  t.deepEqual(
+    directMessageKey.easy(mySSBKeys)(yourClassicURI),
+    key1,
+    'DirectMessageKey.easy produces same result (classic keys + ssb:feed/classic)'
+  )
+
+  // legacy support
+  const yourEd25519URI = yourClassicURI.replace('classic', 'ed25519') // ssb:feed/classic
+  t.deepEqual(
+    directMessageKey.easy(mySSBKeys)(yourEd25519URI),
+    key1,
+    'DirectMessageKey.easy produces same result (classic keys + ssb:feed/ed25519)'
   )
 
   t.deepEqual(
     directMessageKey.easy(mySSBKeys)(bendyKeys.id),
     key3,
-    'DirectMessageKey.easy produces same result (classic/bendy butt)'
+    'DirectMessageKey.easy produces same result (classic keys + ssb:feed/bendybutt-v1)'
   )
 
   t.deepEqual(
     directMessageKey.easy(bendyKeys)(mySSBKeys.id),
     key3,
-    'DirectMessageKey.easy produces same result (bendy butt/classic)'
+    'DirectMessageKey.easy produces same result (bendy butt keys + sigil)'
   )
 
   /* test vectors we've imported */

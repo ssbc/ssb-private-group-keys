@@ -19,9 +19,10 @@ module.exports = class DHKeys {
   constructor (keys, opts = {}) {
     // feedKeys = { secret: Buffer, public: Buffer }
     this.type = 3 // type: encryption-key
-    this.format = opts.fromEd25519
-      ? 0 // dm related
-      : 1 // probably po-box related
+    this.format = opts.format
+    if (!this.format && opts.fromEd25519) this.format = 0
+    // fromEd25519 implies this is an encryption keypair being derived from a signing keypair
+    // which is the classic way DMs are done (box2-dm-dh format = 0)
 
     if (keys === undefined) return // you are expected to use .generate() in this case
 
@@ -68,6 +69,8 @@ module.exports = class DHKeys {
   }
 
   toBFE () {
+    if (this.format === undefined) throw new Error('format is undefined, please use opts.format')
+
     return {
       secret: this.sk && Buffer.concat([
         Buffer.from([this.type]),
@@ -94,4 +97,5 @@ function bufferize (key, length) {
   if (typeof (key) !== 'string') throw new Error(`unable to bufferize ${typeof key}`)
 
   return Buffer.from(key.replace('.ed25519', ''), 'base64')
+  // NOTE that '@' is not in base64, so it automatically is dropped from the key when encoded
 }
