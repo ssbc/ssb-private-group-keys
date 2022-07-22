@@ -8,7 +8,9 @@
     "url": "git://github.com/ssbc/ssb-private-group-keys.git"
   },
   "scripts": {
-    "test": "tape 'test/**/*.test.js' | tap-arc",
+    "test": "npm run test:js && npm run test:only && npm run lint",
+    "test:js": "tape 'test/**/*.test.js' | tap-arc",
+    "test:only": "if grep -r --exclude-dir=node_modules --exclude-dir=.git --color 'test\\.only' ; then exit 1; fi",
     "lint": "standard --fix",
     "generate": "rm -rf test/generate/*/vectors && node test/generate/index.js"
   },
