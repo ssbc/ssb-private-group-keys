@@ -26,21 +26,21 @@ module.exports = class DHKeys {
 
     if (keys === undefined) return // you are expected to use .generate() in this case
 
-    keys.secret = keys.secret || keys.private
+    const secret = keys.secret || keys.private
 
     if (opts.fromEd25519) {
       /* convert ed25519 to curve25519 key */
       this.pk = Buffer.alloc(na.crypto_scalarmult_BYTES)
       na.crypto_sign_ed25519_pk_to_curve25519(this.pk, bufferize(keys.public))
 
-      if (keys.secret) {
+      if (secret) {
         this.sk = Buffer.alloc(na.crypto_scalarmult_SCALARBYTES)
-        na.crypto_sign_ed25519_sk_to_curve25519(this.sk, bufferize(keys.secret))
+        na.crypto_sign_ed25519_sk_to_curve25519(this.sk, bufferize(secret))
       }
     } else {
       /* already curve25519 */
       if (keys.public) this.pk = bufferize(keys.public)
-      if (keys.secret) this.sk = bufferize(keys.secret)
+      if (secret) this.sk = bufferize(secret)
     }
 
     if (this.pk && this.pk.length !== na.crypto_scalarmult_BYTES) {
@@ -97,4 +97,5 @@ function bufferize (key, length) {
   if (typeof (key) !== 'string') throw new Error(`unable to bufferize ${typeof key}`)
 
   return Buffer.from(key.replace('.ed25519', ''), 'base64')
+  // NOTE that '@' is not in base64, so it automatically is dropped from the key when encoded
 }

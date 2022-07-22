@@ -7,7 +7,7 @@ const vectors = [
 ]
 
 const { poBoxKey } = require('..')
-const { decodeLeaves, DHFeedKeys, DHPOBoxKeys, ssbKeys, bbKeys } = require('./helpers')
+const { decodeLeaves, DHFeedKeys, DHPOBoxKeys, ssbKeys } = require('./helpers')
 
 const SCHEME = Buffer.from(pgSpec.keySchemes.po_box, 'utf8')
 
@@ -15,7 +15,7 @@ test('po-box-key', t => {
   const poBox = DHPOBoxKeys()
 
   const classicKeys = ssbKeys.generate()
-  const bendyKeys = bbKeys.generate()
+  const bendyKeys = ssbKeys.generate(null, null, 'bendybutt-v1')
 
   /* general checks */
   function test (poBox, feedKeys, type) {

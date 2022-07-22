@@ -8,7 +8,7 @@ const vectors = [
 ]
 
 const { directMessageKey } = require('../')
-const { decodeLeaves, DHFeedKeys, ssbKeys, bbKeys } = require('./helpers')
+const { decodeLeaves, DHFeedKeys, ssbKeys } = require('./helpers')
 const SCHEME = Buffer.from(pgSpec.keySchemes.feed_id_dm, 'utf8')
 
 test('direct-message-key', t => {
@@ -18,7 +18,7 @@ test('direct-message-key', t => {
   const yourSSBKeys = ssbKeys.generate()
   const your = DHFeedKeys(yourSSBKeys)
 
-  const bendyKeys = bbKeys.generate()
+  const bendyKeys = ssbKeys.generate(null, null, 'bendybutt-v1')
   const bendy = DHFeedKeys(bendyKeys)
 
   /* general checks */
@@ -41,19 +41,20 @@ test('direct-message-key', t => {
     'DirectMessageKey.easy produces same result (classic keys + sigil)'
   )
 
-  const yourEd25519URI = fromFeedSigil(yourSSBKeys.id) // ssb:feed/ed25519
+  const yourClassicURI = fromFeedSigil(yourSSBKeys.id) // ssb:feed/classic
+  t.deepEqual(
+    directMessageKey.easy(mySSBKeys)(yourClassicURI),
+    key1,
+    'DirectMessageKey.easy produces same result (classic keys + ssb:feed/classic)'
+  )
+
+  // legacy support
+  const yourEd25519URI = yourClassicURI.replace('classic', 'ed25519') // ssb:feed/classic
   t.deepEqual(
     directMessageKey.easy(mySSBKeys)(yourEd25519URI),
     key1,
     'DirectMessageKey.easy produces same result (classic keys + ssb:feed/ed25519)'
   )
-
-  // const yourClassicURI = yourEd25519URI.replace('ed25519', 'classic') // ssb:feed/classic
-  // t.deepEqual(
-  //   directMessageKey.easy(mySSBKeys)(yourClassicURI),
-  //   key1,
-  //   'DirectMessageKey.easy produces same result (classic keys + ssb:feed/classic)'
-  // )
 
   t.deepEqual(
     directMessageKey.easy(mySSBKeys)(bendyKeys.id),
