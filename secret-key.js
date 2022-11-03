@@ -5,9 +5,13 @@ const na = require('sodium-universal')
 // - an envelopes top level key (`msg_key`) from which others are derived
 
 module.exports = class SecretKey {
-  constructor (length) {
-    this.key = na.sodium_malloc(length || na.crypto_secretbox_KEYBYTES)
-    na.randombytes_buf(this.key)
+  constructor (lengthOrBuffer) {
+    if (Buffer.isBuffer(lengthOrBuffer)) {
+      this.key = lengthOrBuffer
+    } else {
+      this.key = na.sodium_malloc(length || na.crypto_secretbox_KEYBYTES);
+      na.randombytes_buf(this.key)
+    }
   }
 
   toString (encoding = 'base64') {

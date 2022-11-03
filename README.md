@@ -60,6 +60,13 @@ methods:
 - `secretKey.toBuffer() => buffer` return raw buffer with the key data in it
 - `secretKey.toString() => string` returns a `base64` encoded string of the key
 
+### `new SecretKey(buffer) => secretKey`
+
+An alternative way to use the constructor, in case you already have the group
+key bytes as a buffer, is to pass the buffer as the argument. This simply
+"embodies" the group key as a `SecretKey` instance, it doesn't generate anything
+new.
+
 ---
 
 ### `new DiffieHellmanKeys(keys?, opts?) => dhKeys`
@@ -80,7 +87,7 @@ where:
 - `dhKeys` *DiffieHellmanKeys instance* with methods:
     - `dhKeys.generate() => dhKeys` - generates public and private dh keys
     - `dhKeys.toBuffer() => { public: Buffer, secret: Buffer }` - returns the raw keys as Buffers
-    - `dhKeys.toBFE() => { public: BFE, secret: BFE }` - return [BFE] encodings of the keys (as Buffers) 
+    - `dhKeys.toBFE() => { public: BFE, secret: BFE }` - return [BFE] encodings of the keys (as Buffers)
 
 ### `DiffieHellmanKeys.scalarMult(A, B) => result`
 
