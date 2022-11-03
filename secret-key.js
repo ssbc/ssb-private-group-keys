@@ -9,7 +9,8 @@ module.exports = class SecretKey {
     if (Buffer.isBuffer(lengthOrBuffer)) {
       this.key = lengthOrBuffer
     } else {
-      this.key = na.sodium_malloc(length || na.crypto_secretbox_KEYBYTES);
+      const length = lengthOrBuffer || na.crypto_secretbox_KEYBYTES
+      this.key = na.sodium_malloc(length)
       na.randombytes_buf(this.key)
     }
   }
