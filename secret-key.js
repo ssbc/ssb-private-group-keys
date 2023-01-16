@@ -12,6 +12,8 @@ module.exports = class SecretKey {
       const length = lengthOrBuffer || na.crypto_secretbox_KEYBYTES
       this.key = na.sodium_malloc(length)
       na.randombytes_buf(this.key)
+      // to make sure `key` will be a proper buffer in a browser
+      this.key = Buffer.from(this.key)
     }
   }
 
